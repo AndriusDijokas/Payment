@@ -1,0 +1,25 @@
+version: "3"
+services:
+  mysql-payment:
+    restart: always
+    image: mysql:5.7.34
+    ports:
+      - "3309:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: "psw"
+      MYSQL_DATABASE: "payment"
+    volumes:
+      - mysql-mafia-data:/var/lib/mysql
+
+  payment:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      WAIT_FOR_IT_TIMEOUT: 20
+      SPRING_PROFILES_ACTIVE: "dc"
+      MYSQL_HOST: mysql-payment
+      MYSQL_PORT: 3306
+
+volumes:
+  mysql-mafia-data:
